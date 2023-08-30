@@ -21,10 +21,3 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::resource('tasks', TaskController::class);
-Route::post('tasks/{task}', [TaskController::class, 'update']);
-
-Route::resource('tasks/{task}/image', ImageController::class);
-
-Route::resource('tasks', TaskController::class);
-
-Route::post('tasks',[TaskController::class, 'store']);

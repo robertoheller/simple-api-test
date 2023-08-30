@@ -24,9 +24,10 @@ class StoreTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required',
-            'description' => 'required',
+            'title'             => 'required',
+            'description'       => 'required',
             'created_user_id'   =>  'required',
+            'image.*'           => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ];
     }
 

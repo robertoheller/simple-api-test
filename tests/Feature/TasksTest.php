@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Task;
 
 class TasksTest extends TestCase
 {
@@ -54,55 +55,38 @@ class TasksTest extends TestCase
             );
     }
 
+    public function test_show_task()
+    {
+
+        $task = Task::first();
+
+        $response = $this->get('/api/tasks/' . $task->id)
+            ->assertStatus(200);
+    }
+
 
     public function test_edit_tasks()
     {
+        $task = Task::first();
+
         $payload = [
             'title' => 'Test User',
             'description' => 'description test',
             'updated_user_id' => '1',
-            'completed' => '0',
+            'completed' => '1',
         ];
 
-        $response = $this->post('/api/tasks/1', $payload)
+        $response = $this->put('/api/tasks/' . $task->id, $payload)
             ->assertStatus(200);
     }
-
-    public function test_tasks_image_list()
-    {
-
-        $response = $this->get('/api/tasks/1/image')
-            ->assertStatus(200);
-
-    }
-
-
-    public function test_task_image_can_be_uploaded(): void
-    {
-        Storage::fake('avatars');
- 
-        $file = UploadedFile::fake()->image('avatar.jpg');
- 
-        $response = $this->post('/api/tasks/1/image', [
-            'image' => $file,
-        ])->assertStatus(200);
- 
-        // Storage::disk('avatars')->assertExists('/image/'.$file->hashName());
-    }
-
-    // public function test_task_image_delete(): void
-    // {
-
-    //     $response = $this->delete('/api/tasks/1/image/1')
-    //         ->assertStatus(200);
-
-    // }
 
 
     public function test_delete_tasks()
     {
-        $response = $this->delete('/api/tasks/1')
-            ->assertOk(200);
+        $task = Task::first();
+
+        $response = $this->delete('/api/tasks/' . $task->id)
+            ->assertStatus(200);
     }
 
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Task;
+use App\Models\Image;
 
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
@@ -33,6 +34,19 @@ class TaskController extends Controller
 
         $data = Task::create($validatedData);
 
+        if ($request->hasFile('image')) {
+
+            foreach ($request->file('image') as $file) {
+
+                $image = new Image;
+                $image->image = $file->store('image');
+                $image->task_id = $data->id;
+                $image->save();
+
+            }
+
+        }
+
         return response($data, Response::HTTP_CREATED);
 
     }
@@ -44,7 +58,9 @@ class TaskController extends Controller
     {
         $data = Task::find($task);
 
-        return response($data, Response::HTTP_ACCEPTED);
+        $data->load('images');
+
+        return response($data, 200);
     }
 
     /**
@@ -57,7 +73,9 @@ class TaskController extends Controller
 
         $data = Task::find($task)->first();
 
-        return $data->update($validatedData);
+        $data->update($validatedData);
+
+        return response($data, 200);
 
     }
 
